@@ -1,3 +1,163 @@
-/* Estilos personalizados para a extensão Unhook YouTube */
+/* Modern Unhook YouTube Extension - Content Styles */
+/* Enhanced styles for smooth hiding/showing transitions and visual improvements */
 
-/* Estilos serão aplicados dinamicamente pelo content.js com base nas configurações do usuário */
+/* Smooth transition for all Unhook-modified elements */
+[data-unhook-hidden] {
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              visibility 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Utility classes for smooth hiding */
+.unhook-hiding {
+  opacity: 0 !important;
+  transform: translateY(-10px) scale(0.95) !important;
+  pointer-events: none !important;
+}
+
+.unhook-hidden {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+/* Enhanced focus and interaction states for better accessibility */
+.unhook-focus-visible {
+  outline: 2px solid #a855f7 !important;
+  outline-offset: 2px !important;
+  border-radius: 4px !important;
+}
+
+/* Smooth transitions for YouTube elements when they're being modified */
+ytd-watch-next-secondary-results-renderer,
+ytd-comments,
+ytd-masthead,
+ytd-compact-video-renderer,
+ytd-rich-section-renderer,
+ytd-feed-filter-chip-bar-renderer {
+  transition: opacity 0.3s ease, transform 0.3s ease !important;
+}
+
+/* Subtle enhancement for remaining content when recommendations are hidden */
+ytd-watch-flexy[theater] #primary.ytd-watch-flexy {
+  margin-right: 0 !important;
+  padding-right: 24px !important;
+}
+
+/* Better spacing when sidebar is hidden */
+.unhook-sidebar-hidden #secondary.ytd-watch-flexy {
+  display: none !important;
+}
+
+.unhook-sidebar-hidden #primary.ytd-watch-flexy {
+  margin-right: 0 !important;
+  padding-right: 24px !important;
+}
+
+/* Improve layout when header is hidden */
+.unhook-header-hidden #page-manager.ytd-app {
+  margin-top: 0 !important;
+}
+
+.unhook-header-hidden ytd-page-manager {
+  margin-top: 0 !important;
+}
+
+/* Clean up spacing when comments are hidden */
+.unhook-comments-hidden #secondary.ytd-watch-flexy {
+  padding-top: 0 !important;
+}
+
+/* Better visual feedback for hidden elements during development */
+.unhook-debug [data-unhook-hidden]::before {
+  content: '🎯 Hidden by Unhook';
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: linear-gradient(135deg, #a855f7, #c084fc);
+  color: white;
+  padding: 2px 6px;
+  font-size: 10px;
+  font-weight: bold;
+  border-radius: 0 0 4px 0;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+/* Smooth loading animation for content */
+@keyframes unhookFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.unhook-fade-in {
+  animation: unhookFadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Clean up visual artifacts when elements are hidden */
+.unhook-cleanup-margins {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Enhanced scrollbar for cleaner look when content changes */
+.unhook-enhanced-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.unhook-enhanced-scroll::-webkit-scrollbar-track {
+  background: rgba(168, 85, 247, 0.1);
+  border-radius: 4px;
+}
+
+.unhook-enhanced-scroll::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #a855f7, #c084fc);
+  border-radius: 4px;
+}
+
+.unhook-enhanced-scroll::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #9333ea, #a855f7);
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .unhook-sidebar-hidden #primary.ytd-watch-flexy {
+    padding-right: 12px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .unhook-sidebar-hidden #primary.ytd-watch-flexy {
+    padding-right: 8px !important;
+  }
+}
+
+/* Dark mode enhancements */
+@media (prefers-color-scheme: dark) {
+  .unhook-debug [data-unhook-hidden]::before {
+    background: linear-gradient(135deg, #7c3aed, #a855f7);
+  }
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  [data-unhook-hidden],
+  .unhook-hiding,
+  ytd-watch-next-secondary-results-renderer,
+  ytd-comments,
+  ytd-masthead,
+  ytd-compact-video-renderer,
+  ytd-rich-section-renderer,
+  ytd-feed-filter-chip-bar-renderer {
+    transition: none !important;
+  }
+  
+  .unhook-fade-in {
+    animation: none !important;
+  }
+}

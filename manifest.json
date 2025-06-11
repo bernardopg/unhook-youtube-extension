@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Unhook YouTube Extension",
-  "version": "1.0",
-  "description": "Uma extensão para personalizar a experiência no YouTube.",
+  "name": "Unhook YouTube",
+  "version": "1.0.0",
+  "description": "Personalize sua experiência no YouTube com uma interface moderna e limpa. Hide distrações e foque no que importa.",
   "permissions": [
     "activeTab",
     "storage"

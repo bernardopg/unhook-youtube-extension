@@ -1,9 +1,123 @@
-// Este script é injetado nas páginas do YouTube para aplicar as configurações do usuário
+// Modern Unhook YouTube Extension - Content Script
+// Enhanced content script with better selectors and performance optimizations
 
-console.log('Script de conteúdo da extensão Unhook YouTube carregado.');
+console.log('🎯 Unhook YouTube Extension: Content script loaded');
 
-// Função para aplicar estilos com base nas configurações
+// Configuration object with improved selectors
+const SELECTORS = {
+  hideRecommendations: [
+    'ytd-watch-next-secondary-results-renderer',
+    'ytd-compact-video-renderer',
+    '#related',
+    '[data-testid="watch-next-shelf"]'
+  ],
+  hideComments: [
+    'ytd-comments',
+    '#comments',
+    'ytd-comment-thread-renderer'
+  ],
+  hideSidebar: [
+    'ytd-watch-next-secondary-results-renderer',
+    '#secondary',
+    '#secondary-inner'
+  ],
+  hideVoiceSearch: [
+    '#voice-search-button',
+    '.yt-spec-touch-feedback-shape--overlay-touch-response',
+    'button[aria-label*="voice"]',
+    'button[aria-label*="voz"]'
+  ],
+  hideNotifications: [
+    'button[aria-label*="Notification"]',
+    'button[aria-label*="Notificações"]',
+    '#notification-count',
+    'ytd-notification-topbar-button-renderer'
+  ],
+  hideHeader: [
+    'ytd-masthead',
+    '#masthead',
+    '#masthead-container'
+  ],
+  hideCreateButton: [
+    '#buttons > ytd-button-renderer',
+    'button[aria-label*="Create"]',
+    'button[aria-label*="Criar"]',
+    'ytd-topbar-menu-button-renderer:has([d*="M14"])'
+  ],
+  hideVirtualKeyboard: [
+    'button[aria-label*="keyboard"]',
+    'button[aria-label*="teclado"]',
+    '#keyboard-button'
+  ],
+  hideFilterChips: [
+    '#header.style-scope.ytd-rich-grid-renderer',
+    'ytd-feed-filter-chip-bar-renderer',
+    '#chips-wrapper',
+    'yt-chip-cloud-renderer'
+  ],
+  hideNewsSection: [
+    'ytd-rich-section-renderer',
+    '[aria-label*="News"]',
+    '[aria-label*="Notícias"]',
+    'ytd-shelf-renderer:has([aria-label*="News"])'
+  ]
+};
+
+// Settings cache for performance
+let currentSettings = {};
+let isApplying = false;
+
+// Debounce function to limit rapid calls
+function debounce(func, wait) {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
+
+// Enhanced function to hide elements with multiple selectors
+function hideElements(selectors, settingName) {
+  let hiddenCount = 0;
+  
+  selectors.forEach(selector => {
+    const elements = document.querySelectorAll(selector);
+    elements.forEach(element => {
+      if (element && element.style.display !== 'none') {
+        element.style.display = 'none';
+        element.setAttribute('data-unhook-hidden', settingName);
+        hiddenCount++;
+      }
+    });
+  });
+  
+  if (hiddenCount > 0) {
+    console.log(`🎯 Unhook: Hidden ${hiddenCount} elements for ${settingName}`);
+  }
+}
+
+// Function to show hidden elements
+function showElements(settingName) {
+  const elements = document.querySelectorAll(`[data-unhook-hidden="${settingName}"]`);
+  elements.forEach(element => {
+    element.style.display = '';
+    element.removeAttribute('data-unhook-hidden');
+  });
+  
+  if (elements.length > 0) {
+    console.log(`🎯 Unhook: Restored ${elements.length} elements for ${settingName}`);
+  }
+}
+
+// Main function to apply settings
 function applySettings() {
+  if (isApplying) return;
+  isApplying = true;
+
   chrome.storage.sync.get({
     hideRecommendations: false,
     hideComments: false,
@@ -16,63 +130,107 @@ function applySettings() {
     hideFilterChips: false,
     hideNewsSection: false
   }, function(items) {
-    if (items.hideRecommendations) {
-      hideElement('ytd-browse');
-    }
-    if (items.hideComments) {
-      hideElement('ytd-comments');
-    }
-    if (items.hideSidebar) {
-      hideElement('ytd-watch-next-secondary-results-renderer');
-    }
-    if (items.hideVoiceSearch) {
-      hideElement('.yt-spec-touch-feedback-shape--overlay-touch-response');
-    }
-    if (items.hideNotifications) {
-      hideElement('button[id="button"].style-scope.yt-icon-button[aria-label="Notificações"]');
-    }
-    if (items.hideHeader) {
-      hideElement('ytd-masthead');
-    }
-    if (items.hideCreateButton) {
-      hideElement('#buttons > ytd-button-renderer > yt-button-shape > button');
-    }
-    if (items.hideVirtualKeyboard) {
-      hideElement('#center > yt-searchbox > div.ytSearchboxComponentInputBox.ytSearchboxComponentInputBoxDark > div');
-    }
-    if (items.hideFilterChips) {
-      hideElement('#header.style-scope.ytd-rich-grid-renderer');
-    }
-    if (items.hideNewsSection) {
-      hideElement('ytd-rich-section-renderer');
-      console.log('Seção de notícias ocultada.');
-    }
+    // Apply or remove settings based on current configuration
+    Object.keys(SELECTORS).forEach(setting => {
+      const settingKey = setting;
+      const shouldHide = items[settingKey];
+      const wasHidden = currentSettings[settingKey];
+      
+      if (shouldHide && !wasHidden) {
+        hideElements(SELECTORS[setting], setting);
+      } else if (!shouldHide && wasHidden) {
+        showElements(setting);
+      }
+    });
+    
+    // Update settings cache
+    currentSettings = { ...items };
+    isApplying = false;
   });
 }
 
-// Função para ocultar um elemento pelo seletor
-function hideElement(selector) {
-  let element = document.querySelector(selector);
-  if (element) {
-    element.style.display = 'none';
-    console.log(`Elemento ${selector} ocultado.`);
-  } else {
-    console.log(`Elemento ${selector} não encontrado.`);
-  }
+// Debounced version of applySettings
+const debouncedApplySettings = debounce(applySettings, 100);
+
+// Initialize extension
+function initializeExtension() {
+  console.log('🎯 Unhook YouTube: Initializing extension...');
+  applySettings();
 }
 
-// Aplica as configurações quando a página carrega
-window.addEventListener('load', applySettings);
+// Wait for page to be ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializeExtension);
+} else {
+  initializeExtension();
+}
 
-// Também observa mudanças no DOM para aplicar configurações em elementos carregados dinamicamente
+// Enhanced mutation observer with better performance
 const observer = new MutationObserver(function(mutations) {
-  applySettings();
-});
-observer.observe(document.body, { childList: true, subtree: true });
-
-// Ouve mensagens do popup ou background para atualizar as configurações em tempo real
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  if (request.action === 'updateSettings') {
-    applySettings();
+  let shouldUpdate = false;
+  
+  // Check if any relevant changes occurred
+  mutations.forEach(mutation => {
+    if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+      // Check if any added nodes are relevant YouTube components
+      const addedElements = Array.from(mutation.addedNodes);
+      const hasRelevantChanges = addedElements.some(node => {
+        if (node.nodeType === Node.ELEMENT_NODE) {
+          const tagName = node.tagName?.toLowerCase();
+          return tagName?.startsWith('ytd-') || 
+                 node.querySelector && 
+                 (node.querySelector('[class*="ytd-"]') || 
+                  node.querySelector('[id*="button"]') ||
+                  node.querySelector('[aria-label]'));
+        }
+        return false;
+      });
+      
+      if (hasRelevantChanges) {
+        shouldUpdate = true;
+      }
+    }
+  });
+  
+  if (shouldUpdate) {
+    debouncedApplySettings();
   }
 });
+
+// Start observing with optimized settings
+observer.observe(document.body, { 
+  childList: true, 
+  subtree: true,
+  attributes: false, // Don't watch attribute changes for better performance
+  characterData: false // Don't watch text changes
+});
+
+// Listen for messages from popup or background script
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+  if (request.action === 'updateSettings') {
+    console.log('🎯 Unhook: Received settings update request');
+    applySettings();
+    sendResponse({ status: 'Settings updated' });
+  }
+  return true; // Keep message channel open for async response
+});
+
+// Listen for storage changes for real-time updates
+chrome.storage.onChanged.addListener(function(changes, namespace) {
+  if (namespace === 'sync') {
+    console.log('🎯 Unhook: Storage changed, updating settings');
+    debouncedApplySettings();
+  }
+});
+
+// Handle page navigation (YouTube SPA)
+let currentUrl = location.href;
+new MutationObserver(() => {
+  if (location.href !== currentUrl) {
+    currentUrl = location.href;
+    console.log('🎯 Unhook: Page navigation detected, reapplying settings');
+    setTimeout(debouncedApplySettings, 500); // Delay for page elements to load
+  }
+}).observe(document, { subtree: true, childList: true });
+
+console.log('🎯 Unhook YouTube: Content script fully loaded and ready!');
