@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Unhook YouTube Extension</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div id="container">
+    <h1>Unhook YouTube</h1>
+    <p>Personalize sua experiência no YouTube.</p>
+    <div id="settings">
+      <label for="hideRecommendations">Ocultar Recomendações:</label>
+      <input type="checkbox" id="hideRecommendations">
+      <br>
+      <label for="hideComments">Ocultar Comentários:</label>
+      <input type="checkbox" id="hideComments">
+      <br>
+      <label for="hideSidebar">Ocultar Barra Lateral:</label>
+      <input type="checkbox" id="hideSidebar">
+    </div>
+    <button id="saveSettings">Salvar Configurações</button>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

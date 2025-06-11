@@ -1,0 +1,2 @@
+Este é um arquivo placeholder para criar a pasta 'icons'.
+Adicione os ícones da extensão (icon16.png, icon48.png, icon128.png) nesta pasta.
