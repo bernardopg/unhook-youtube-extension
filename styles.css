@@ -37,6 +37,77 @@ ytd-feed-filter-chip-bar-renderer {
   transition: opacity 0.3s ease, transform 0.3s ease !important;
 }
 
+/* Specific styles for YouTube Text Input Assistant (Keyboard Assistant) */
+ytd-text-input-assistant,
+.ytdTextInputAssistantHost,
+.ytSearchboxComponentYtdTextInputAssistantWrapper,
+.ytdTextInputAssistantButton,
+img[src*="inputtools/images/tia.png"],
+img[tia_field_name="search_query"],
+[tia_property="youtube"],
+div[class*="TextInputAssistant"],
+button[class*="TextInputAssistant"] {
+  transition: opacity 0.2s ease !important;
+}
+
+/* Hide keyboard assistant when setting is enabled */
+[data-unhook-hidden="hideVirtualKeyboard"] {
+  opacity: 0 !important;
+  transform: scale(0) !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+}
+
+/* When hideVirtualKeyboard is enabled, hide all keyboard assistant elements */
+body[data-unhook-keyboard="hidden"] ytd-text-input-assistant,
+body[data-unhook-keyboard="hidden"] .ytdTextInputAssistantHost,
+body[data-unhook-keyboard="hidden"]
+  .ytSearchboxComponentYtdTextInputAssistantWrapper,
+body[data-unhook-keyboard="hidden"] .ytdTextInputAssistantButton,
+body[data-unhook-keyboard="hidden"] img[src*="inputtools/images/tia.png"],
+body[data-unhook-keyboard="hidden"] img[tia_field_name="search_query"],
+body[data-unhook-keyboard="hidden"] [tia_property="youtube"],
+body[data-unhook-keyboard="hidden"] div[class*="TextInputAssistant"],
+body[data-unhook-keyboard="hidden"] button[class*="TextInputAssistant"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Ultimate keyboard assistant hiding - Maximum priority */
+html ytd-text-input-assistant,
+html .ytdTextInputAssistantHost,
+html .ytSearchboxComponentYtdTextInputAssistantWrapper,
+html .ytdTextInputAssistantButton,
+html img[src*="inputtools/images/tia.png"],
+html img[tia_field_name="search_query"],
+html [tia_property="youtube"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  position: absolute !important;
+  left: -9999px !important;
+  width: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
+}
+
+/* Additional aggressive hiding for keyboard assistant */
+*[class*="TextInputAssistant"],
+*[src*="tia.png"],
+*[tia_field_name],
+*[tia_property] {
+  display: none !important;
+}
+
+/* Hide parent containers that might contain the assistant */
+div:has(> ytd-text-input-assistant),
+div:has(> .ytdTextInputAssistantHost),
+div:has(> img[src*="tia.png"]) {
+  display: none !important;
+}
+
 /* Subtle enhancement for remaining content when recommendations are hidden */
 ytd-watch-flexy[theater] #primary.ytd-watch-flexy {
   margin-right: 0 !important;

@@ -1,5 +1,5 @@
 // Modern Unhook YouTube Extension - Content Script
-// Enhanced content script with better selectors and performance optimizations
+// Enhanced content script with better selectors and performance
 
 console.log("🎯 Unhook YouTube Extension: Content script loaded");
 
@@ -40,6 +40,16 @@ const SELECTORS = {
     'button[aria-label*="keyboard"]',
     'button[aria-label*="teclado"]',
     "#keyboard-button",
+    "ytd-text-input-assistant",
+    ".ytdTextInputAssistantHost",
+    ".ytSearchboxComponentYtdTextInputAssistantWrapper",
+    ".ytdTextInputAssistantButton",
+    'img[src*="inputtools/images/tia.png"]',
+    'img[alt=""][src*="tia.png"]',
+    '[tia_field_name="search_query"]',
+    '[tia_property="youtube"]',
+    'div[class*="TextInputAssistant"]',
+    'button[class*="TextInputAssistant"]',
   ],
   hideFilterChips: [
     "#header.style-scope.ytd-rich-grid-renderer",
@@ -54,7 +64,7 @@ const SELECTORS = {
     'ytd-shelf-renderer:has([aria-label*="News"])',
   ],
   hideShorts: [
-    'ytd-rich-section-renderer:has(ytd-rich-shelf-renderer[is-shorts])',
+    "ytd-rich-section-renderer:has(ytd-rich-shelf-renderer[is-shorts])",
     'ytd-guide-entry-renderer:has(a[title="Shorts"])',
   ],
 };
@@ -91,6 +101,11 @@ function hideElements(selectors, settingName) {
     });
   });
 
+  // Special handling for keyboard assistant
+  if (settingName === "hideVirtualKeyboard" && hiddenCount > 0) {
+    document.body.setAttribute("data-unhook-keyboard", "hidden");
+  }
+
   if (hiddenCount > 0) {
     console.log(`🎯 Unhook: Hidden ${hiddenCount} elements for ${settingName}`);
   }
@@ -105,6 +120,11 @@ function showElements(settingName) {
     element.style.display = "";
     element.removeAttribute("data-unhook-hidden");
   });
+
+  // Special handling for keyboard assistant
+  if (settingName === "hideVirtualKeyboard") {
+    document.body.removeAttribute("data-unhook-keyboard");
+  }
 
   if (elements.length > 0) {
     console.log(
@@ -140,9 +160,17 @@ function applySettings() {
         const wasHidden = currentSettings[settingKey];
 
         if (shouldHide && !wasHidden) {
-          hideElements(SELECTORS[setting], setting);
+          if (setting === "hideVirtualKeyboard") {
+            handleKeyboardAssistant(true);
+          } else {
+            hideElements(SELECTORS[setting], setting);
+          }
         } else if (!shouldHide && wasHidden) {
-          showElements(setting);
+          if (setting === "hideVirtualKeyboard") {
+            handleKeyboardAssistant(false);
+          } else {
+            showElements(setting);
+          }
         }
       });
 
@@ -156,21 +184,96 @@ function applySettings() {
 // Debounced version of applySettings
 const debouncedApplySettings = debounce(applySettings, 100);
 
+// Check if YouTube is fully loaded
+function isYouTubeLoaded() {
+  // Check for essential YouTube elements that indicate the page is ready
+  const essentialElements = [
+    "ytd-app",
+    "ytd-masthead",
+    "#masthead",
+    "ytd-page-manager",
+  ];
+
+  for (const selector of essentialElements) {
+    if (!document.querySelector(selector)) {
+      return false;
+    }
+  }
+
+  // Additional checks for page readiness
+  const ytdApp = document.querySelector("ytd-app");
+  if (ytdApp && !ytdApp.hasAttribute("is-ready")) {
+    // YouTube app hasn't finished initializing
+    return false;
+  }
+
+  // Check if the search box is present (indicates UI is loaded)
+  const searchBox = document.querySelector(
+    "#search-input input, #search input, ytd-searchbox input"
+  );
+  if (!searchBox) {
+    return false;
+  }
+
+  // Check document ready state
+  const isDocumentReady =
+    document.readyState === "complete" || document.readyState === "interactive";
+
+  return isDocumentReady;
+}
+
+// Wait for YouTube to be fully loaded
+function waitForYouTubeLoad(callback, maxAttempts = 50) {
+  let attempts = 0;
+
+  function checkLoad() {
+    attempts++;
+
+    if (isYouTubeLoaded()) {
+      console.log(`🎯 Unhook YouTube: Page loaded after ${attempts} attempts`);
+      callback();
+    } else if (attempts < maxAttempts) {
+      console.log(
+        `🎯 Unhook YouTube: Waiting for page load... (attempt ${attempts}/${maxAttempts})`
+      );
+      setTimeout(checkLoad, 200); // Check every 200ms
+    } else {
+      console.warn(
+        `🎯 Unhook YouTube: Max attempts reached, initializing anyway`
+      );
+      callback();
+    }
+  }
+
+  checkLoad();
+}
+
 // Initialize extension
 function initializeExtension() {
   console.log("🎯 Unhook YouTube: Initializing extension...");
   applySettings();
+
+  // Start continuous monitoring for dynamic elements
+  startContinuousMonitoring();
 }
 
-// Wait for page to be ready
+// Wait for page to be ready and YouTube to be fully loaded
 if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initializeExtension);
+  document.addEventListener("DOMContentLoaded", () => {
+    waitForYouTubeLoad(initializeExtension);
+  });
 } else {
-  initializeExtension();
+  // Document already loaded, but still wait for YouTube specific elements
+  waitForYouTubeLoad(initializeExtension);
 }
 
 // Enhanced mutation observer with better performance
 const observer = new MutationObserver(function (mutations) {
+  // Only process mutations if YouTube is fully loaded
+  if (!isYouTubeLoaded()) {
+    return;
+  }
+
   let shouldUpdate = false;
 
   // Check if any relevant changes occurred
@@ -229,14 +332,128 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
   }
 });
 
-// Handle page navigation (YouTube SPA)
+// Handle page navigation (YouTube SPA) with proper loading detection
 let currentUrl = location.href;
 new MutationObserver(() => {
   if (location.href !== currentUrl) {
     currentUrl = location.href;
-    console.log("🎯 Unhook: Page navigation detected, reapplying settings");
-    setTimeout(debouncedApplySettings, 500); // Delay for page elements to load
+    console.log(
+      "🎯 Unhook: Page navigation detected, waiting for new page to load..."
+    );
+
+    // Wait for the new page to load completely before reapplying settings
+    waitForYouTubeLoad(() => {
+      console.log("🎯 Unhook: New page loaded, reapplying settings");
+      debouncedApplySettings();
+    }, 25); // Reduce max attempts for navigation as page structure should load faster
   }
 }).observe(document, { subtree: true, childList: true });
+
+// Specific function to handle YouTube text input assistant
+function handleKeyboardAssistant(shouldHide) {
+  // More aggressive selectors for keyboard assistant
+  const keyboardSelectors = [
+    "ytd-text-input-assistant",
+    ".ytdTextInputAssistantHost",
+    ".ytSearchboxComponentYtdTextInputAssistantWrapper",
+    ".ytdTextInputAssistantButton",
+    'img[src*="inputtools/images/tia.png"]',
+    'img[tia_field_name="search_query"]',
+    '[tia_property="youtube"]',
+    'div[class*="TextInputAssistant"]',
+    'button[class*="TextInputAssistant"]',
+  ];
+
+  let elementsFound = 0;
+
+  keyboardSelectors.forEach((selector) => {
+    try {
+      const elements = document.querySelectorAll(selector);
+      elements.forEach((element) => {
+        if (element) {
+          elementsFound++;
+          if (shouldHide) {
+            element.style.display = "none";
+            element.style.visibility = "hidden";
+            element.style.opacity = "0";
+            element.setAttribute("data-unhook-hidden", "hideVirtualKeyboard");
+          } else {
+            element.style.display = "";
+            element.style.visibility = "";
+            element.style.opacity = "";
+            element.removeAttribute("data-unhook-hidden");
+          }
+        }
+      });
+    } catch (e) {
+      // Ignore selector errors
+    }
+  });
+
+  // Set body attribute for CSS targeting
+  if (shouldHide && elementsFound > 0) {
+    document.body.setAttribute("data-unhook-keyboard", "hidden");
+  } else if (!shouldHide) {
+    document.body.removeAttribute("data-unhook-keyboard");
+  }
+
+  if (elementsFound > 0) {
+    console.log(
+      `🎯 Unhook: Keyboard assistant - ${
+        shouldHide ? "hidden" : "shown"
+      } ${elementsFound} elements`
+    );
+  }
+}
+
+// Continuous monitoring for dynamic elements like keyboard assistant
+function startContinuousMonitoring() {
+  // Only start monitoring if YouTube is fully loaded
+  if (!isYouTubeLoaded()) {
+    console.log(
+      "🎯 Unhook: Delaying continuous monitoring until YouTube is loaded"
+    );
+    setTimeout(startContinuousMonitoring, 1000);
+    return;
+  }
+
+  setInterval(() => {
+    // Double-check that YouTube is still loaded (in case of navigation issues)
+    if (!isYouTubeLoaded()) {
+      return;
+    }
+
+    chrome.storage.sync.get(["hideVirtualKeyboard"], (items) => {
+      if (items.hideVirtualKeyboard) {
+        // Check if keyboard assistant elements have appeared
+        const keyboardElements = document.querySelectorAll(
+          [
+            "ytd-text-input-assistant",
+            ".ytdTextInputAssistantHost",
+            ".ytSearchboxComponentYtdTextInputAssistantWrapper",
+            'img[src*="inputtools/images/tia.png"]',
+          ].join(",")
+        );
+
+        if (keyboardElements.length > 0) {
+          let hasVisibleElements = false;
+          keyboardElements.forEach((el) => {
+            if (
+              el.style.display !== "none" &&
+              !el.hasAttribute("data-unhook-hidden")
+            ) {
+              hasVisibleElements = true;
+            }
+          });
+
+          if (hasVisibleElements) {
+            console.log("🎯 Unhook: Re-hiding keyboard assistant elements");
+            handleKeyboardAssistant(true);
+          }
+        }
+      }
+    });
+  }, 2000); // Check every 2 seconds
+}
 
 console.log("🎯 Unhook YouTube: Content script fully loaded and ready!");
