@@ -53,6 +53,10 @@ const SELECTORS = {
     '[aria-label*="Notícias"]',
     'ytd-shelf-renderer:has([aria-label*="News"])',
   ],
+  hideShorts: [
+    'ytd-rich-section-renderer:has(ytd-rich-shelf-renderer[is-shorts])',
+    'ytd-guide-entry-renderer:has(a[title="Shorts"])',
+  ],
 };
 
 // Settings cache for performance
@@ -126,6 +130,7 @@ function applySettings() {
       hideVirtualKeyboard: false,
       hideFilterChips: false,
       hideNewsSection: false,
+      hideShorts: false,
     },
     function (items) {
       // Apply or remove settings based on current configuration

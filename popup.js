@@ -23,6 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
     "hideVirtualKeyboard",
     "hideFilterChips",
     "hideNewsSection",
+    "hideShorts",
   ];
 
   // Create default settings object
