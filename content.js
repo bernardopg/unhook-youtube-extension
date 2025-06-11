@@ -7,7 +7,14 @@ function applySettings() {
   chrome.storage.sync.get({
     hideRecommendations: false,
     hideComments: false,
-    hideSidebar: false
+    hideSidebar: false,
+    hideVoiceSearch: false,
+    hideNotifications: false,
+    hideHeader: false,
+    hideCreateButton: false,
+    hideVirtualKeyboard: false,
+    hideFilterChips: false,
+    hideNewsSection: false
   }, function(items) {
     if (items.hideRecommendations) {
       hideElement('ytd-browse');
@@ -17,6 +24,28 @@ function applySettings() {
     }
     if (items.hideSidebar) {
       hideElement('ytd-watch-next-secondary-results-renderer');
+    }
+    if (items.hideVoiceSearch) {
+      hideElement('.yt-spec-touch-feedback-shape--overlay-touch-response');
+    }
+    if (items.hideNotifications) {
+      hideElement('button[id="button"].style-scope.yt-icon-button[aria-label="Notificações"]');
+    }
+    if (items.hideHeader) {
+      hideElement('ytd-masthead');
+    }
+    if (items.hideCreateButton) {
+      hideElement('#buttons > ytd-button-renderer > yt-button-shape > button');
+    }
+    if (items.hideVirtualKeyboard) {
+      hideElement('#center > yt-searchbox > div.ytSearchboxComponentInputBox.ytSearchboxComponentInputBoxDark > div');
+    }
+    if (items.hideFilterChips) {
+      hideElement('#header.style-scope.ytd-rich-grid-renderer');
+    }
+    if (items.hideNewsSection) {
+      hideElement('ytd-rich-section-renderer');
+      console.log('Seção de notícias ocultada.');
     }
   });
 }
