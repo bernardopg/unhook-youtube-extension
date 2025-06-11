@@ -22,6 +22,7 @@ A modern, beautiful Chrome extension that allows you to customize your YouTube e
 ### From Source (Development)
 
 1. Clone this repository:
+
    ```bash
    git clone <repository-url>
    cd unhook-youtube-extension
@@ -37,7 +38,7 @@ A modern, beautiful Chrome extension that allows you to customize your YouTube e
 
 ### From Chrome Web Store
 
-*Coming soon...*
+_Coming soon..._
 
 ## 🎮 Usage
 

@@ -1,150 +1,156 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="UTF-8">
-  <title>Unhook YouTube Extension</title>
-  <link rel="stylesheet" href="popup.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-</head>
-<body>
-  <div id="container">
-    <div class="header">
-      <div class="logo">
-        <i class="fab fa-youtube"></i>
-        <h1>Unhook</h1>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Unhook YouTube Extension</title>
+    <link rel="stylesheet" href="popup.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="container">
+      <div class="header">
+        <div class="logo">
+          <i class="fab fa-youtube"></i>
+          <h1>Unhook</h1>
+        </div>
+        <p class="subtitle">Personalize sua experiência no YouTube</p>
       </div>
-      <p class="subtitle">Personalize sua experiência no YouTube</p>
+
+      <div class="settings-container">
+        <div class="settings-group">
+          <h3><i class="fas fa-eye-slash"></i> Interface</h3>
+          <div class="setting-item">
+            <label class="switch" for="hideRecommendations">
+              <input type="checkbox" id="hideRecommendations" />
+              <span class="slider"></span>
+            </label>
+            <div class="setting-info">
+              <span class="setting-title">Recomendações</span>
+              <span class="setting-desc">Ocultar vídeos recomendados</span>
+            </div>
+          </div>
+
+          <div class="setting-item">
+            <label class="switch" for="hideComments">
+              <input type="checkbox" id="hideComments" />
+              <span class="slider"></span>
+            </label>
+            <div class="setting-info">
+              <span class="setting-title">Comentários</span>
+              <span class="setting-desc">Ocultar seção de comentários</span>
+            </div>
+          </div>
+
+          <div class="setting-item">
+            <label class="switch" for="hideSidebar">
+              <input type="checkbox" id="hideSidebar" />
+              <span class="slider"></span>
+            </label>
+            <div class="setting-info">
+              <span class="setting-title">Barra Lateral</span>
+              <span class="setting-desc">Ocultar menu lateral</span>
+            </div>
+          </div>
+
+          <div class="setting-item">
+            <label class="switch" for="hideHeader">
+              <input type="checkbox" id="hideHeader" />
+              <span class="slider"></span>
+            </label>
+            <div class="setting-info">
+              <span class="setting-title">Cabeçalho</span>
+              <span class="setting-desc">Ocultar barra superior</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <h3><i class="fas fa-search"></i> Busca & Navegação</h3>
+          <div class="setting-item">
+            <label class="switch" for="hideVoiceSearch">
+              <input type="checkbox" id="hideVoiceSearch" />
+              <span class="slider"></span>
+            </label>
+            <div class="setting-info">
+              <span class="setting-title">Busca por Voz</span>
+              <span class="setting-desc">Ocultar ícone do microfone</span>
+            </div>
+          </div>
+
+          <div class="setting-item">
+            <label class="switch" for="hideVirtualKeyboard">
+              <input type="checkbox" id="hideVirtualKeyboard" />
+              <span class="slider"></span>
+            </label>
+            <div class="setting-info">
+              <span class="setting-title">Teclado Virtual</span>
+              <span class="setting-desc">Ocultar botão do teclado</span>
+            </div>
+          </div>
+
+          <div class="setting-item">
+            <label class="switch" for="hideFilterChips">
+              <input type="checkbox" id="hideFilterChips" />
+              <span class="slider"></span>
+            </label>
+            <div class="setting-info">
+              <span class="setting-title">Filtros de Chips</span>
+              <span class="setting-desc">Ocultar barra de filtros</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <h3><i class="fas fa-bell"></i> Notificações & Extras</h3>
+          <div class="setting-item">
+            <label class="switch" for="hideNotifications">
+              <input type="checkbox" id="hideNotifications" />
+              <span class="slider"></span>
+            </label>
+            <div class="setting-info">
+              <span class="setting-title">Notificações</span>
+              <span class="setting-desc">Ocultar sino de notificações</span>
+            </div>
+          </div>
+
+          <div class="setting-item">
+            <label class="switch" for="hideCreateButton">
+              <input type="checkbox" id="hideCreateButton" />
+              <span class="slider"></span>
+            </label>
+            <div class="setting-info">
+              <span class="setting-title">Botão Criar</span>
+              <span class="setting-desc">Ocultar botão de criação (+)</span>
+            </div>
+          </div>
+
+          <div class="setting-item">
+            <label class="switch" for="hideNewsSection">
+              <input type="checkbox" id="hideNewsSection" />
+              <span class="slider"></span>
+            </label>
+            <div class="setting-info">
+              <span class="setting-title">Seção de Notícias</span>
+              <span class="setting-desc">Ocultar notícias e trending</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">
+        <button id="saveSettings" class="save-btn">
+          <i class="fas fa-save"></i>
+          Salvar Configurações
+        </button>
+      </div>
     </div>
-    
-    <div class="settings-container">
-      <div class="settings-group">
-        <h3><i class="fas fa-eye-slash"></i> Interface</h3>
-        <div class="setting-item">
-          <label class="switch" for="hideRecommendations">
-            <input type="checkbox" id="hideRecommendations">
-            <span class="slider"></span>
-          </label>
-          <div class="setting-info">
-            <span class="setting-title">Recomendações</span>
-            <span class="setting-desc">Ocultar vídeos recomendados</span>
-          </div>
-        </div>
-        
-        <div class="setting-item">
-          <label class="switch" for="hideComments">
-            <input type="checkbox" id="hideComments">
-            <span class="slider"></span>
-          </label>
-          <div class="setting-info">
-            <span class="setting-title">Comentários</span>
-            <span class="setting-desc">Ocultar seção de comentários</span>
-          </div>
-        </div>
-        
-        <div class="setting-item">
-          <label class="switch" for="hideSidebar">
-            <input type="checkbox" id="hideSidebar">
-            <span class="slider"></span>
-          </label>
-          <div class="setting-info">
-            <span class="setting-title">Barra Lateral</span>
-            <span class="setting-desc">Ocultar menu lateral</span>
-          </div>
-        </div>
-        
-        <div class="setting-item">
-          <label class="switch" for="hideHeader">
-            <input type="checkbox" id="hideHeader">
-            <span class="slider"></span>
-          </label>
-          <div class="setting-info">
-            <span class="setting-title">Cabeçalho</span>
-            <span class="setting-desc">Ocultar barra superior</span>
-          </div>
-        </div>
-      </div>
-      
-      <div class="settings-group">
-        <h3><i class="fas fa-search"></i> Busca & Navegação</h3>
-        <div class="setting-item">
-          <label class="switch" for="hideVoiceSearch">
-            <input type="checkbox" id="hideVoiceSearch">
-            <span class="slider"></span>
-          </label>
-          <div class="setting-info">
-            <span class="setting-title">Busca por Voz</span>
-            <span class="setting-desc">Ocultar ícone do microfone</span>
-          </div>
-        </div>
-        
-        <div class="setting-item">
-          <label class="switch" for="hideVirtualKeyboard">
-            <input type="checkbox" id="hideVirtualKeyboard">
-            <span class="slider"></span>
-          </label>
-          <div class="setting-info">
-            <span class="setting-title">Teclado Virtual</span>
-            <span class="setting-desc">Ocultar botão do teclado</span>
-          </div>
-        </div>
-        
-        <div class="setting-item">
-          <label class="switch" for="hideFilterChips">
-            <input type="checkbox" id="hideFilterChips">
-            <span class="slider"></span>
-          </label>
-          <div class="setting-info">
-            <span class="setting-title">Filtros de Chips</span>
-            <span class="setting-desc">Ocultar barra de filtros</span>
-          </div>
-        </div>
-      </div>
-      
-      <div class="settings-group">
-        <h3><i class="fas fa-bell"></i> Notificações & Extras</h3>
-        <div class="setting-item">
-          <label class="switch" for="hideNotifications">
-            <input type="checkbox" id="hideNotifications">
-            <span class="slider"></span>
-          </label>
-          <div class="setting-info">
-            <span class="setting-title">Notificações</span>
-            <span class="setting-desc">Ocultar sino de notificações</span>
-          </div>
-        </div>
-        
-        <div class="setting-item">
-          <label class="switch" for="hideCreateButton">
-            <input type="checkbox" id="hideCreateButton">
-            <span class="slider"></span>
-          </label>
-          <div class="setting-info">
-            <span class="setting-title">Botão Criar</span>
-            <span class="setting-desc">Ocultar botão de criação (+)</span>
-          </div>
-        </div>
-        
-        <div class="setting-item">
-          <label class="switch" for="hideNewsSection">
-            <input type="checkbox" id="hideNewsSection">
-            <span class="slider"></span>
-          </label>
-          <div class="setting-info">
-            <span class="setting-title">Seção de Notícias</span>
-            <span class="setting-desc">Ocultar notícias e trending</span>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <div class="footer">
-      <button id="saveSettings" class="save-btn">
-        <i class="fas fa-save"></i>
-        Salvar Configurações
-      </button>
-    </div>
-  </div>
-  <script src="popup.js"></script>
-</body>
+    <script src="popup.js"></script>
+  </body>
 </html>

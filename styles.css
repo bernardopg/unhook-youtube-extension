@@ -4,8 +4,8 @@
 /* Smooth transition for all Unhook-modified elements */
 [data-unhook-hidden] {
   transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-              transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-              visibility 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    visibility 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
 /* Utility classes for smooth hiding */
@@ -69,7 +69,7 @@ ytd-watch-flexy[theater] #primary.ytd-watch-flexy {
 
 /* Better visual feedback for hidden elements during development */
 .unhook-debug [data-unhook-hidden]::before {
-  content: '🎯 Hidden by Unhook';
+  content: "🎯 Hidden by Unhook";
   position: absolute;
   top: 0;
   left: 0;
@@ -156,7 +156,7 @@ ytd-watch-flexy[theater] #primary.ytd-watch-flexy {
   ytd-feed-filter-chip-bar-renderer {
     transition: none !important;
   }
-  
+
   .unhook-fade-in {
     animation: none !important;
   }

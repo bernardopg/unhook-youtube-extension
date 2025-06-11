@@ -3,7 +3,9 @@
 Since we cannot generate actual PNG files in this environment, here's what you need to do:
 
 ## Required Icon Sizes
+
 You need to create three icon files with these exact names:
+
 - `icon16.png` (16x16 pixels) - Used in the extension toolbar
 - `icon48.png` (48x48 pixels) - Used in the extensions management page
 - `icon128.png` (128x128 pixels) - Used in the Chrome Web Store
@@ -11,21 +13,26 @@ You need to create three icon files with these exact names:
 ## Design Guidelines
 
 ### Color Scheme
+
 Use the same dark purple theme from the extension:
+
 - Primary: #a855f7 (Purple 500)
 - Secondary: #c084fc (Purple 400)
 - Dark: #7c3aed (Purple 600)
 - Background: #1a0b2e (Dark purple)
 
 ### Icon Design Concept
+
 Create a modern, minimalist icon that represents "unhooking" or "disconnecting" from YouTube distractions:
 
 1. **Option 1: Unhook Symbol**
+
    - A stylized hook symbol (🪝) with a subtle break or gap
    - Use gradient from #a855f7 to #c084fc
    - Clean, rounded edges
 
 2. **Option 2: YouTube Play Button Modified**
+
    - Take the YouTube play triangle
    - Add a subtle "X" or slash through it
    - Use purple gradient instead of red
@@ -36,20 +43,24 @@ Create a modern, minimalist icon that represents "unhooking" or "disconnecting" 
    - Clean, minimal design
 
 ### Design Tools Recommendations
+
 - **Figma** (free, web-based)
 - **Canva** (free templates available)
 - **Adobe Illustrator** (if available)
 - **GIMP** (free alternative)
 
 ### Quick Online Icon Generators
+
 - favicon.io (can create different sizes)
 - icons8.com (free icons with customization)
 - flaticon.com (free with attribution)
 
 ## Temporary Solution
+
 For now, the extension will work without custom icons (Chrome will use default icon), but adding proper icons will make it look much more professional.
 
 ## SVG Source for Developers
+
 Here's an SVG concept you can use as a starting point:
 
 ```svg
